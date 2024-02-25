@@ -1,6 +1,5 @@
 import { configureStore } from "@reduxjs/toolkit";
 import userReducer from "./userSlice";
-import { setupApi } from "@reduxjs/toolkit/query/react";
 import { api } from "./api";
 
 export const store = configureStore({

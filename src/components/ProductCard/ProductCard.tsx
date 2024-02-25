@@ -1,5 +1,4 @@
 import { Product } from "@/types";
-import React from "react";
 import "./ProductCard.scss";
 
 export default function ProductCard(props: Product) {
