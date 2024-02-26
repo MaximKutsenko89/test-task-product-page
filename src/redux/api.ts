@@ -1,9 +1,4 @@
-import {
-  LoginParams,
-  Response,
-  SearchParams,
-  SuccessUerResponse,
-} from "@/types";
+import { LoginParams, Response, SuccessUerResponse } from "@/types";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export const api = createApi({
@@ -21,9 +16,9 @@ export const api = createApi({
         };
       },
     }),
-    products: builder.query<Response, SearchParams>({
-      query: ({ page, token, from, to, price_from, price_to, title }) => ({
-        url: `/products?page=${page}&from=${from}&to=${to}&price_from=${price_from}&price_to=${price_to}&title=${title}`,
+    products: builder.query<Response, { params: string; token: string }>({
+      query: ({ params, token }) => ({
+        url: `/products?${params}`,
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,

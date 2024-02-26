@@ -4,43 +4,33 @@ import { useProductsQuery } from "@/redux/api";
 import useUser from "@/redux/hooks/useUser";
 import { useSearchParams } from "react-router-dom";
 import Pagination from "rc-pagination";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import clsx from "clsx";
 import "rc-pagination/assets/index.css";
 import "./ProductPage.scss";
 
 export default function ProductPage() {
   const [asideActive, setAsideActive] = useState(false);
-  const [searchParams, setSearchParams] = useSearchParams({
-    page: "1",
-    from: "",
-    to: "",
-    price_from: "",
-    price_to: "",
-    title: "",
-  });
+  const [searchParams, setSearchParams] = useSearchParams();
+
   const page = Number(searchParams.get("page"));
   const from = searchParams.get("from");
   const to = searchParams.get("to");
   const price_from = searchParams.get("price_from");
   const price_to = searchParams.get("price_to");
   const title = searchParams.get("title");
-
   const { user } = useUser();
+
   const {
     data: products,
     error,
     isLoading,
     isFetching,
   } = useProductsQuery({
-    page: page,
     token: user.token,
-    from: from || "",
-    to: to || "",
-    price_from: price_from || "",
-    price_to: price_to || "",
-    title: title || "",
+    params: searchParams.toString(),
   });
+
   function setSearchParamsHandler(key: string, value: string) {
     setSearchParams(
       (prev) => {
@@ -72,6 +62,21 @@ export default function ProductPage() {
     setSearchParamsHandler("price_from", "");
   }
 
+  function removeParam(param: string) {
+    const newSearchParams = new URLSearchParams(searchParams);
+    newSearchParams.delete(param);
+    setSearchParams(newSearchParams.toString());
+  }
+
+  useEffect(() => {
+    const paramsToCheck = ["from", "to", "price_from", "price_to", "title"];
+    paramsToCheck.forEach((param) => {
+      if (param !== "page" && searchParams.get(param) === "") {
+        removeParam(param);
+      }
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [from, to, price_from, price_to, title]);
   return (
     <>
       <header>
